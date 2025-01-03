@@ -17,3 +17,5 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/fgh', function (Request $request) {
     return $request->user();
 });
+
+
