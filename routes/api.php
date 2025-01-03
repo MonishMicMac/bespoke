@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Api\UsersController;
+use App\Http\Controllers\Api\VendorController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -19,3 +21,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 
+
+Route::post('vendor/signup', [VendorController::class, 'store']);
+Route::put('vendor/edit/{id}', [VendorController::class, 'update']);
+
+Route::post('user/signup', [UsersController::class, 'store']);
+Route::put('user/edit/{id}', [UsersController::class, 'update']);

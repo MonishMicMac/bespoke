@@ -17,6 +17,8 @@
                     <option value="{{ $category->id }}">{{ $category->name }}</option>
                 @endforeach
             </select>
+
+           
         </div>
         <div class="mb-3">
             <label for="img_path" class="form-label">Image</label>

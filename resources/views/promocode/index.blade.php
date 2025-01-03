@@ -43,10 +43,12 @@
             </div>
             <div class="col-md-6">
                 <label for="action" class="form-label">Action (Active/Inactive)</label>
-                <select class="form-select @error('action') is-invalid @enderror" id="action" name="action" required>
+                <select class="form-select @error('action') is-invalid @enderror form-control" id="action" name="action" required>
                     <option value="0" @if(old('action') == 0) selected @endif>Inactive</option>
                     <option value="1" @if(old('action') == 1) selected @endif>Active</option>
                 </select>
+
+                
                 @error('action')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
@@ -56,7 +58,7 @@
         <div class="row mb-3">
             <div class="col-md-6">
                 <label for="discount_type" class="form-label">Discount Type</label>
-                <select class="form-select @error('discount_type') is-invalid @enderror" id="discount_type" name="discount_type" required>
+                <select class="form-select @error('discount_type') is-invalid @enderror form-control" id="discount_type" name="discount_type" required>
                     <option value="0" @if(old('discount_type') == 0) selected @endif>Flat</option>
                     <option value="1" @if(old('discount_type') == 1) selected @endif>Percentage</option>
                 </select>
