@@ -1,6 +1,8 @@
 <?php
 use App\Http\Controllers\AdminAuthController;
+use App\Http\Controllers\AppBannerController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\PromocodeController;
 use App\Http\Controllers\SubCatController;
 use App\Http\Controllers\VendorController;
 
@@ -29,21 +31,34 @@ Route::middleware(['admin'])->group(function () {
     Route::delete('/categories/{id}', [CategoryController::class, 'destroy'])->name('categories.destroy');  // Updated to DELETE for destroy
 
 
-   // Add the following to your routes file, for example `routes/web.php`:
+    // Add the following to your routes file, for example `routes/web.php`:
 
-// Display the form for adding a new subcategory
-Route::get('/add/subcategory', [SubCatController::class, 'index'])->name('subcategories.index');
+    // Display the form for adding a new subcategory
+    Route::get('/add/subcategory', [SubCatController::class, 'index'])->name('subcategories.index');
 
-// Store the new subcategory
-Route::post('/subcategories', [SubCatController::class, 'store'])->name('subcategories.store'); // This is the route for storing subcategories
+    // Store the new subcategory
+    Route::post('/subcategories', [SubCatController::class, 'store'])->name('subcategories.store'); // This is the route for storing subcategories
 
-// Edit a subcategory
-Route::get('/subcategories/{subcategory}/edit', [SubCatController::class, 'edit'])->name('subcategories.edit');
+    // Edit a subcategory
+    Route::get('/subcategories/{subcategory}/edit', [SubCatController::class, 'edit'])->name('subcategories.edit');
 
-// Update a subcategory
-Route::put('/subcategories/{subcategory}', [SubCatController::class, 'update'])->name('subcategories.update');
+    // Update a subcategory
+    Route::put('/subcategories/{subcategory}', [SubCatController::class, 'update'])->name('subcategories.update');
 
-// Soft delete a subcategory
-Route::delete('/subcategories/{subcategory}', [SubCatController::class, 'destroy'])->name('subcategories.destroy');
+    // Soft delete a subcategory
+    Route::delete('/subcategories/{subcategory}', [SubCatController::class, 'destroy'])->name('subcategories.destroy');
+
+
+    Route::get('/banners/create', [AppBannerController::class, 'create'])->name('banners.create');
+    Route::post('/banners/store', [AppBannerController::class, 'store'])->name('banners.store');
+    Route::resource('banners', AppBannerController::class);
+
+
+    Route::get('create/promocode', [PromocodeController::class, 'create'])->name('promocode.create');
+    Route::post('/promocode/store', [PromocodeController::class, 'store'])->name('promocode.store');
+    Route::get('/promocode/{id}/edit', [PromocodeController::class, 'edit'])->name('promocode.edit');
+    Route::put('/promocode/{id}', [PromocodeController::class, 'update'])->name('promocode.update');
+    Route::delete('/promocode/{id}', [PromocodeController::class, 'destroy'])->name('promocode.destroy');
+
 
 });
