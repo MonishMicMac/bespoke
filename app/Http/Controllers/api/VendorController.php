@@ -152,4 +152,24 @@ class VendorController extends Controller
         return response()->json(['message' => 'Vendor updated successfully', 'data' => $vendor], 200);
     }
 
+    public function login(Request $request){
+      
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|string',
+        ]);
+    
+        // Find the vendor by email
+        $vendor = VendorLogin::where('email', $request->email)->where('password',$request->password)->first();
+    
+        // Check if the vendor exists
+        if (!$vendor) {
+            return response()->json(['message' => 'Vendor not found'], 404);
+        }
+    
+
+    
+        // If successful, you can return some kind of success response, e.g., a token or vendor data
+        return response()->json(['message' => 'Login successful', 'vendor' => $vendor], 200);
+    }
 }

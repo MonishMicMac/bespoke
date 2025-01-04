@@ -25,6 +25,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('vendor/signup', [VendorController::class, 'store']);
 Route::put('vendor/edit/{id}', [VendorController::class, 'update']);
 
+Route::get('vendor/login', [VendorController::class, 'login']);
+
 Route::post('user/signup', [UsersController::class, 'store']);
 Route::put('user/edit/{id}', [UsersController::class, 'update']);
 
