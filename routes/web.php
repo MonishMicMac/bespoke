@@ -4,6 +4,7 @@ use App\Http\Controllers\AppBannerController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\PromocodeController;
 use App\Http\Controllers\SubCatController;
+use App\Http\Controllers\UsersController;
 use App\Http\Controllers\VendorController;
 
 // Admin login routes
@@ -61,4 +62,7 @@ Route::middleware(['admin'])->group(function () {
     Route::delete('/promocode/{id}', [PromocodeController::class, 'destroy'])->name('promocode.destroy');
 
 
+    Route::get('/vendor/view', [VendorController::class, 'view'])->name('vendor.view');
+
+    Route::get('/user/view', [UsersController::class, 'view'])->name('user.view');
 });

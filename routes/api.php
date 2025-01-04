@@ -27,3 +27,6 @@ Route::put('vendor/edit/{id}', [VendorController::class, 'update']);
 
 Route::post('user/signup', [UsersController::class, 'store']);
 Route::put('user/edit/{id}', [UsersController::class, 'update']);
+
+
+
