@@ -27,6 +27,7 @@ class VendorLogin extends Model
         'genders',
         'in_designer',
         'description',
+        'action',
     ];
 }
 

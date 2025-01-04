@@ -19,17 +19,6 @@
                     value="{{ request('to_date') }}">
             </div>
 
-            <!-- Approval Status -->
-            <div class="col-md-4">
-                <label for="approve_status" class="form-label">Approval Status</label>
-                <select class="form-select form-control" id="approve_status" name="approve_status">
-                    <option value="">Select Status</option>
-                    <option value="0" {{ request('approve_status') == '0' ? 'selected' : '' }}>Waiting for Approval
-                    </option>
-                    <option value="1" {{ request('approve_status') == '1' ? 'selected' : '' }}>Approved</option>
-                    <option value="2" {{ request('approve_status') == '2' ? 'selected' : '' }}>Declined</option>
-                </select>
-            </div>
         </div>
 
         <div class="row mt-4">
@@ -59,6 +48,7 @@
                     <th>Mobile</th>
                     <th>Approval Status</th>
                     <th>Created At</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -66,7 +56,7 @@
                     <tr>
                         <td>{{ $user->username }}</td>
                         <td>{{ $user->email }}</td>
-                        <td>{{ $user->mobile_no }}</td>
+                        <td>{{ $user->mobile }}</td>
                         <td>
                             @if ($user->approval_status == 0)
                                 Waiting for Approval
@@ -77,6 +67,16 @@
                             @endif
                         </td>
                         <td>{{ $user->created_at }}</td>
+                        <td>
+                            <a href="{{ route('user.edit', $user->id) }}" class="btn btn-sm btn-warning">Edit</a>
+                            <form action="{{ route('user.delete', $user->id) }}" method="POST"
+                                style="display:inline-block;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-sm btn-danger"
+                                    onclick="return confirm('Are you sure you want to delete this user?');">Delete</button>
+                            </form>
+                        </td>
                     </tr>
                 @endforeach
             </tbody>

@@ -65,4 +65,18 @@ Route::middleware(['admin'])->group(function () {
     Route::get('/vendor/view', [VendorController::class, 'view'])->name('vendor.view');
 
     Route::get('/user/view', [UsersController::class, 'view'])->name('user.view');
+
+
+    Route::get('/user/edit/{id}', [UsersController::class, 'edit'])->name('user.edit');
+    Route::post('/user/update/{id}', [UsersController::class, 'update'])->name('user.update');
+    Route::delete('/user/delete/{id}', [UsersController::class, 'delete'])->name('user.delete');
+    Route::post('/user/update-status', [UsersController::class, 'updateStatus'])->name('user.updateStatus');
+
+
+    Route::get('/vendor/view', [VendorController::class, 'view'])->name('vendor.view');
+    Route::get('/vendor/edit/{id}', [VendorController::class, 'edit'])->name('vendor.edit');
+    Route::post('/vendor/update/{id}', [VendorController::class, 'update'])->name('vendor.update');
+    Route::delete('/vendor/delete/{id}', [VendorController::class, 'destroy'])->name('vendor.delete');
+    Route::post('/vendor/update-status', [VendorController::class, 'updateStatus'])->name('vendor.updateStatus');
+
 });

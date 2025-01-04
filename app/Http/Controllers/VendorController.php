@@ -33,12 +33,68 @@ class VendorController extends Controller
             $vendors->where('approval_status', $approvalStatus);
         }
 
-        $vendors = $vendors->get();
+        $vendors = $vendors->where('action','0')->get();
     }
 
     // Pass data to the view
     return view('vendors.index', compact('vendors'));
 }
+
+
+public function edit($id)
+{
+    $vendor = VendorLogin::find($id);
+    if (!$vendor) {
+        return redirect()->route('vendor.view')->with('error', 'Vendor not found.');
+    }
+
+    return view('vendors.edit', compact('vendor'));
+}
+
+public function update(Request $request, $id)
+{
+    $vendor = VendorLogin::find($id);
+    if (!$vendor) {
+        return redirect()->route('vendor.view')->with('error', 'Vendor not found.');
+    }
+
+    $validated = $request->validate([
+        'username' => 'required|string|max:255',
+        'email' => 'required|email|unique:vendor_login,email,' . $id,
+        'mobile_no' => 'required|string|max:15|unique:vendor_login,mobile_no,' . $id,
+    ]);
+
+    $vendor->update($validated);
+
+    return redirect()->route('vendor.view')->with('success', 'Vendor updated successfully.');
+}
+
+public function destroy($id)
+{
+    $vendor = VendorLogin::find($id);
+    if (!$vendor) {
+        return redirect()->route('vendor.view')->with('error', 'Vendor not found.');
+    }
+
+    $vendor->update(['action' => '1']);
+    return redirect()->route('vendor.view')->with('success', 'Vendor deleted successfully.');
+}
+
+public function updateStatus(Request $request)
+{
+    $request->validate([
+        'id' => 'required|exists:vendor_login,id',
+        'approval_status' => 'required|in:1,2',
+    ]);
+
+    $vendor = VendorLogin::find($request->id);
+    $vendor->update(['approval_status' => $request->approval_status]);
+
+    $message = $request->approval_status == 1 ? 'Vendor approved successfully' : 'Vendor declined successfully';
+
+    return response()->json(['status' => 'success', 'message' => $message]);
+}
+
 
     
 }
