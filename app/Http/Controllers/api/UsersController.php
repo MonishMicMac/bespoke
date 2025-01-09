@@ -16,7 +16,7 @@ class UsersController extends Controller
             'username' => 'required|string|max:255',
             'mobile' => 'required|string|max:15|unique:user_login,mobile',
             'email' => 'required|email|unique:user_login,email',
-            'password' => 'required|string|min:8',    
+            'password' => 'required|string|min:8',
         ]);
 
         // Check if validation fails
@@ -39,9 +39,9 @@ class UsersController extends Controller
         // Return the newly created user as a response
         return response()->json(['message' => 'User created successfully', 'data' => $user]);
     }
-     public function update(Request $request, $id)
+    public function update(Request $request, $id)
     {
-  
+
         // Find the user by ID
         $user = UserLogin::find($id);
 
@@ -86,7 +86,7 @@ class UsersController extends Controller
 
         // If 'password' is provided, hash and update it
         if ($request->has('password')) {
-            $user->password =$request->password;
+            $user->password = $request->password;
         }
 
         // If 'username' is provided, update it
@@ -128,6 +128,18 @@ class UsersController extends Controller
         $user->save();
 
         return response()->json(['message' => 'User updated successfully', 'data' => $user], 200);
+    }
+    public function login(Request $request)
+    {
+
+        $user_validate = UserLogin::where('email', $request->email)->where('password', $request->password)->first();
+        // dd($user_validate);
+        if ($user_validate) {
+            return response()->json(['status' => 'Success', 'message' => 'User Login successfully', 'data' => $user_validate]);
+        } else {
+            return response()->json(['status' => 'Error', 'message' => 'User Login Invalid']);
+        }
+
     }
 
 
