@@ -1,9 +1,9 @@
 @include('layout.header')
-              
-<div class="contentbar">              
+
+<div class="contentbar">
     <div class="container my-4">
         <h1 class="text-center mb-4">Categories</h1>
-    
+
         <div class="card shadow-sm mb-4">
             <div class="card-body">
                 <h5 class="card-title">Add a New Category</h5>
@@ -27,33 +27,35 @@
                 </form>
             </div>
         </div>
-    
+
         <h2 class="mb-4">Category List</h2>
         <button id="downloadExcel" class="btn btn-success mb-4">Download Excel</button>
-    
+
         <table id="usersTable" class="table  table-bordered table-responsive">
             <thead>
                 <tr>
                     <th>ID</th>
                     <th>Category Name</th>
-                    <th >Image</th>
+                    <th>Image</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
-                <?php $sno=0; ?>
+                <?php $sno = 0; ?>
                 @foreach($categories as $category)
-                    <?php $sno++; ?>
+                    <?php    $sno++; ?>
                     <tr>
                         <td>{{ $sno }}</td>
                         <td>{{ $category->name }}</td>
-                        <td> <img src="{{ asset('storage/'.$category->img_path) }}" alt="Category Image" width="100"></td>
+                        <td> <img src="{{ asset('storage/' . $category->img_path) }}" alt="Category Image" width="100"></td>
                         <td>
                             <a href="{{ route('categories.edit', $category) }}" class="btn btn-warning btn-sm">Edit</a>
-                            <form action="{{ route('categories.destroy', $category) }}" method="POST" style="display:inline;" id="delete-form-{{ $category->id }}">
+                            <form action="{{ route('categories.destroy', $category) }}" method="POST"
+                                style="display:inline;" id="delete-form-{{ $category->id }}">
                                 @csrf
                                 @method('DELETE')
-                                <button type="button" class="btn btn-danger btn-sm" onclick="confirmDelete({{ $category->id }})">Delete</button>
+                                <button type="button" class="btn btn-danger btn-sm"
+                                    onclick="confirmDelete({{ $category->id }})">Delete</button>
                             </form>
                         </td>
                     </tr>
