@@ -172,4 +172,5 @@ class VendorController extends Controller
         // If successful, you can return some kind of success response, e.g., a token or vendor data
         return response()->json(['message' => 'Login successful', 'vendor' => $vendor], 200);
     }
+    
 }
