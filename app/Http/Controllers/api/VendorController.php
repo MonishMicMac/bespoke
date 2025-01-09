@@ -15,7 +15,7 @@ class VendorController extends Controller
         $validator = Validator::make($request->all(), [
             'shop_name' => 'required|string|max:255',
             'username' => 'required|string|max:255',
-            'mobile_no' => 'required|string|max:15|unique:vendor_login,mobile_no', 
+            'mobile_no' => 'required|string|max:15|unique:vendor_login,mobile_no',
             'email' => 'required|email|unique:vendor_login,email',
             'password' => 'required|string|min:8',
         ]);
@@ -86,6 +86,49 @@ class VendorController extends Controller
             $vendor->email = $request->email;
         }
 
+        // If 'image_path' is provided, update it
+        if ($request->has('img_path')) {
+            // Decode Base64 image
+            $base64Image = $request->img_path;
+
+            // Remove the Base64 header if it exists (e.g., "data:image/png;base64,") and decode the data
+            $base64Image = preg_replace('#^data:image/\w+;base64,#i', '', $base64Image);
+
+            // Check if base64Image is not empty after removal of the header
+            if (!empty($base64Image)) {
+                $imageData = base64_decode($base64Image, true); // Ensure strict decoding
+
+                // Check if the decoding was successful
+                if ($imageData === false) {
+                    // Handle decoding failure
+                    return response()->json(['error' => 'Base64 decoding failed'], 400);
+                }
+
+                // Generate a unique filename for the image
+                $filename = 'images/' . uniqid() . '.png';
+
+                // Define the full path to save the image in the 'public/images' directory
+                $filePath = public_path($filename);
+
+                // Store the decoded image in the 'public/images' directory
+                if (file_put_contents($filePath, $imageData) === false) {
+                    // Handle file writing failure
+                    return response()->json(['error' => 'Failed to save image'], 500);
+                }
+
+                // Update the vendor's image path to the relative path
+                $vendor->img_path = $filename; // Save only the relative path to store in the database
+
+                // Optionally, save the vendor record
+                $vendor->save();
+
+                return response()->json(['success' => 'Image uploaded successfully', 'path' => $filename], 200);
+            } else {
+                // Handle invalid Base64 image format
+                return response()->json(['error' => 'Invalid base64 string'], 400);
+            }
+        }
+
         // If 'password' is provided, hash and update it
         if ($request->has('password')) {
             $vendor->password = $request->password;
@@ -152,23 +195,24 @@ class VendorController extends Controller
         return response()->json(['message' => 'Vendor updated successfully', 'data' => $vendor], 200);
     }
 
-    public function login(Request $request){
-      
+    public function login(Request $request)
+    {
+
         $request->validate([
             'email' => 'required|email',
             'password' => 'required|string',
         ]);
-    
+
         // Find the vendor by email
-        $vendor = VendorLogin::where('email', $request->email)->where('password',$request->password)->first();
-    
+        $vendor = VendorLogin::where('email', $request->email)->where('password', $request->password)->first();
+
         // Check if the vendor exists
         if (!$vendor) {
             return response()->json(['message' => 'Vendor not found'], 404);
         }
-    
 
-    
+
+
         // If successful, you can return some kind of success response, e.g., a token or vendor data
         return response()->json(['message' => 'Login successful', 'vendor' => $vendor], 200);
     }
