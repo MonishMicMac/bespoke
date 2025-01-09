@@ -8,7 +8,7 @@ class AppBanner extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['img_path', 'type', 'action'];
+    protected $fillable = ['img_path', 'type', 'navigate', 'searchfield', 'action'];
 }
 
 
