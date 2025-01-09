@@ -4,7 +4,7 @@
     <h2>Create New App Banner</h2>
 
     <!-- Display validation errors -->
-   
+
     <!-- Display error message if any -->
     @if (session('error'))
         <div class="alert alert-danger">
@@ -23,7 +23,7 @@
         </div>
     @endif
 
-    
+
 
     <!-- Banner Creation Form -->
     <form action="{{ route('banners.store') }}" method="POST" enctype="multipart/form-data" id="bannerForm">
@@ -31,22 +31,40 @@
 
         <div class="form-group">
             <label for="img_path">Banner Image <small>(960x576)</small></label>
-            <input type="file" name="img_path" class="form-control" id="imgInput" required onchange="previewImage(event)">
+            <input type="file" name="img_path" class="form-control" id="imgInput" required
+                onchange="previewImage(event)">
             <small id="imgError" class="text-danger"></small> <!-- Error message will appear here -->
         </div>
 
         <div class="form-group">
             <label for="type">Banner Type</label>
             <select name="type" class="form-control" required>
-                <option value="dashboard">Dashboard</option>
+                <option value="homepage">Home Page</option>
                 <option value="promo">Promo</option>
                 <option value="advertisement">Advertisement</option>
             </select>
         </div>
 
+        <div class="form-group">
+            <label for="type">Navigate</label>
+            <select id="navigateType" name="navigate" class="form-control" required>
+                <option value="">--Select--</option>
+                <option value="Navigate to Product">Navigate to Product</option>
+                <option value="Navigate to Shop or Designer">Navigate to Shop or Designer</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="details">Search Field</label>
+            <select id="searchField" name="searchfield" class="form-control" required>
+                <!-- Options will be dynamically updated based on selection -->
+            </select>
+        </div>
+
         <!-- Image Preview Section -->
         <div id="imagePreviewContainer" class="mt-3" style="display:none;">
-            <img id="imagePreview" src="" alt="Image Preview" style="width: 200px; cursor: pointer;" onclick="openModal()">
+            <img id="imagePreview" src="" alt="Image Preview" style="width: 200px; cursor: pointer;"
+                onclick="openModal()">
             <!-- Remove button next to preview -->
             <button type="button" id="removeBtn" class="btn btn-danger" onclick="removeImage()">Remove</button>
         </div>
@@ -63,6 +81,8 @@
                     <th>S.no</th>
                     <th>Image</th>
                     <th>Type</th>
+                    <th>Navigate</th>
+                    <th>Search Field</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -70,27 +90,44 @@
                 <?php $no = 0; ?>
                 <!-- Loop through the banners and display them in the table -->
                 @foreach($banners as $banner)
-                <tr>
-                    <td>{{ ++$no }}</td>
-                    <td>
-                        <a href="{{ asset('storage/' . $banner->img_path) }}" target="_blank">
-                            <img src="{{ asset('storage/' . $banner->img_path) }}" alt="Banner Image" style="width: 100px;">
-                        </a>
-                        
-                    </td>
-                    <td>{{ ucfirst($banner->type) }}</td>
-                    <td>
-                        <!-- Action buttons (e.g., edit or delete) -->
-                        <a href="{{ route('banners.edit', $banner->id) }}" class="btn btn-warning btn-sm">Edit</a>
+                                <tr>
+                                    <td>{{ ++$no }}</td>
+                                    <td>
+                                        <a href="{{ asset('storage/' . $banner->img_path) }}" target="_blank">
+                                            <img src="{{ asset('storage/' . $banner->img_path) }}" alt="Banner Image"
+                                                style="width: 100px;">
+                                        </a>
 
-                        <!-- Delete Banner Form -->
-                        <form action="{{ route('banners.destroy', $banner->id) }}" method="POST" class="delete-form" style="display:inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="button" class="btn btn-danger delete-btn">Delete</button>
-                        </form>
-                    </td>
-                </tr>
+                                    </td>
+                                    <td>{{ ucfirst($banner->type) }}</td>
+                                    <td>{{ ucfirst($banner->navigate) }}</td>
+                                    <td>
+                                        @php
+                                            if ($banner->searchfield) {
+                                                $product = \App\Models\Product::find($banner->searchfield);  // Fetch product by ID
+                                            }
+                                        @endphp
+
+                                        @if(isset($product))
+                                            {{ ucfirst($product->product_name) }} <!-- Display product name -->
+                                        @else
+                                            Product not found
+                                        @endif
+                                    </td>
+
+                                    <td>
+                                        <!-- Action buttons (e.g., edit or delete) -->
+                                        <a href="{{ route('banners.edit', $banner->id) }}" class="btn btn-warning btn-sm">Edit</a>
+
+                                        <!-- Delete Banner Form -->
+                                        <form action="{{ route('banners.destroy', $banner->id) }}" method="POST" class="delete-form"
+                                            style="display:inline;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="button" class="btn btn-danger delete-btn">Delete</button>
+                                        </form>
+                                    </td>
+                                </tr>
                 @endforeach
             </tbody>
         </table>
@@ -99,20 +136,21 @@
 
 <!-- Modal for Image Preview -->
 <div class="modal" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="imageModalLabel">Image Preview</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <img id="modalImage" src="" alt="Large Preview" class="img-fluid" style="max-width: 100%; max-height: 400px;">
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-      </div>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imageModalLabel">Image Preview</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <img id="modalImage" src="" alt="Large Preview" class="img-fluid"
+                    style="max-width: 100%; max-height: 400px;">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 
 @include('layout.footer')
@@ -126,67 +164,67 @@
 
 <script>
     // Initialize DataTable
-    $(document).ready(function() {
+    $(document).ready(function () {
         $('#bannersTable').DataTable();
     });
 
     // Disable submit button after form submission to prevent multiple submissions
-    document.getElementById('bannerForm').onsubmit = function() {
+    document.getElementById('bannerForm').onsubmit = function () {
         document.getElementById('submitBtn').disabled = true;
         document.getElementById('submitBtn').innerText = 'Submitting...';
     };
 
     // Preview image before uploading
     function previewImage(event) {
-    const file = event.target.files[0];
-    const errorContainer = document.getElementById('imgError');
+        const file = event.target.files[0];
+        const errorContainer = document.getElementById('imgError');
 
-    // Clear any previous error messages
-    errorContainer.innerText = '';
-    
-    if (file) {
-        // Check file type
-        const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
-        if (!validTypes.includes(file.type)) {
-            errorContainer.innerText = 'Invalid file type. Please upload a JPEG or PNG image.';
-            document.getElementById('imgInput').value = ''; // Clear the input
-            return;
-        }
+        // Clear any previous error messages
+        errorContainer.innerText = '';
 
-        // Check file size (e.g., 2MB = 2 * 1024 * 1024 bytes)
-        const maxSize = 2 * 1024 * 1024;
-        if (file.size > maxSize) {
-            errorContainer.innerText = 'File size exceeds 2MB. Please upload a smaller image.';
-            document.getElementById('imgInput').value = ''; // Clear the input
-            return;
-        }
+        if (file) {
+            // Check file type
+            const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+            if (!validTypes.includes(file.type)) {
+                errorContainer.innerText = 'Invalid file type. Please upload a JPEG or PNG image.';
+                document.getElementById('imgInput').value = ''; // Clear the input
+                return;
+            }
 
-        // Check image dimensions
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const img = new Image();
-            img.src = e.target.result;
+            // Check file size (e.g., 2MB = 2 * 1024 * 1024 bytes)
+            const maxSize = 2 * 1024 * 1024;
+            if (file.size > maxSize) {
+                errorContainer.innerText = 'File size exceeds 2MB. Please upload a smaller image.';
+                document.getElementById('imgInput').value = ''; // Clear the input
+                return;
+            }
 
-            img.onload = function() {
-                const width = img.width;
-                const height = img.height;
+            // Check image dimensions
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const img = new Image();
+                img.src = e.target.result;
 
-                if (width !== 960 || height !== 576) {
-                    errorContainer.innerText = 'Invalid dimensions. Please upload an image with dimensions 960x576.';
-                    document.getElementById('imgInput').value = ''; // Clear the input
-                    return;
-                }
+                img.onload = function () {
+                    const width = img.width;
+                    const height = img.height;
 
-                // If all checks pass, display the preview
-                const imagePreview = document.getElementById('imagePreview');
-                imagePreview.src = e.target.result;
-                document.getElementById('imagePreviewContainer').style.display = 'block';
+                    if (width !== 960 || height !== 576) {
+                        errorContainer.innerText = 'Invalid dimensions. Please upload an image with dimensions 960x576.';
+                        document.getElementById('imgInput').value = ''; // Clear the input
+                        return;
+                    }
+
+                    // If all checks pass, display the preview
+                    const imagePreview = document.getElementById('imagePreview');
+                    imagePreview.src = e.target.result;
+                    document.getElementById('imagePreviewContainer').style.display = 'block';
+                };
             };
-        };
 
-        reader.readAsDataURL(file);
+            reader.readAsDataURL(file);
+        }
     }
-}
 
 
 
@@ -208,7 +246,7 @@
     }
 
     // SweetAlert confirmation for delete action
-    $(document).on('click', '.delete-btn', function(event) {
+    $(document).on('click', '.delete-btn', function (event) {
         const form = $(this).closest('.delete-form');
 
         // Show SweetAlert confirmation dialog
@@ -223,5 +261,44 @@
                 form.submit();
             }
         });
+    });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const navigateType = document.getElementById('navigateType');
+        const searchField = document.getElementById('searchField');
+
+        const productDetails = @json($productdetails);
+        const vendorDetails = @json($vendordetails);
+
+        // Function to update the search field options
+        function updateSearchField() {
+            // Clear existing options
+            searchField.innerHTML = '';
+
+            if (navigateType.value === 'Navigate to Product') {
+                // Populate with product details
+                productDetails.forEach(product => {
+                    const option = document.createElement('option');
+                    option.value = product.id;
+                    option.textContent = product.product_name;
+                    searchField.appendChild(option);
+                });
+            } else if (navigateType.value === 'Navigate to Shop or Designer') {
+                // Populate with vendor details
+                vendorDetails.forEach(vendor => {
+                    const option = document.createElement('option');
+                    option.value = vendor.id;
+                    option.textContent = vendor.shop_name;
+                    searchField.appendChild(option);
+                });
+            }
+        }
+
+        // Add event listener for changes in the navigate type dropdown
+        navigateType.addEventListener('change', updateSearchField);
+
+        // Initialize with the default selection
+        updateSearchField();
     });
 </script>
