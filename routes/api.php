@@ -1,7 +1,10 @@
 <?php
 
+use App\Http\Controllers\api\AppBannerController;
+use App\Http\Controllers\api\CategoryController;
 use App\Http\Controllers\Api\UsersController;
 use App\Http\Controllers\Api\VendorController;
+use App\Http\Controllers\SubCatController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -16,9 +19,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
 
 
 
@@ -29,6 +32,15 @@ Route::get('vendor/login', [VendorController::class, 'login']);
 
 Route::post('user/signup', [UsersController::class, 'store']);
 Route::put('user/edit/{id}', [UsersController::class, 'update']);
+
+Route::get('user/login', [UsersController::class, 'login']);
+
+Route::get('category/view', [CategoryController::class, 'view']);
+
+Route::get('homepage/view', [AppBannerController::class, 'homepageview']);
+
+
+
 
 
 
