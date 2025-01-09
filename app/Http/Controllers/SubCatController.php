@@ -9,13 +9,13 @@ use Storage;
 
 class SubCatController extends Controller
 {
-  
+
     public function index()
     {
         $categories = Category::where('action', '0')->get(); // Only active categories
         $subcategories = Subcategory::with('category')->where('action', '0')->get(); // Only active subcategories
 
-       
+
         return view('subCategory.index', compact('subcategories', 'categories'));
     }
 
@@ -68,28 +68,28 @@ class SubCatController extends Controller
             'category_id' => 'required|exists:categories,id', // Ensure category exists in the database
             'img_path' => 'nullable|image|mimes:png|max:2048', // Validate image file (supports PNG, JPG, JPEG)
         ]);
-    
+
         // Handle image upload if a new file is provided
         if ($request->hasFile('img_path')) {
             // Delete the old image if exists
             if ($subcategory->img_path) {
                 Storage::delete('public/' . $subcategory->img_path); // Remove the old file
             }
-    
+
             // Store the new image in the 'public' directory
             $imgPath = $request->file('img_path')->store('subcategories', 'public'); // Store in 'public/subcategories'
-    
+
             // Update the image path in the database to be relative to the public storage
             $subcategory->img_path = $imgPath;
         }
-    
+
         // Update the subcategory with new data (including img_path if changed)
         $subcategory->update([
             'name' => $request->name,
             'category_id' => $request->category_id,
             'img_path' => $subcategory->img_path, // Ensure img_path is updated if a new image was uploaded
         ]);
-    
+
         return redirect()->route('subcategories.index')->with('success', 'Subcategory updated successfully.');
     }
 
@@ -102,4 +102,6 @@ class SubCatController extends Controller
 
         return redirect()->route('subcategories.index')->with('success', 'Subcategory deleted successfully.');
     }
+
+
 }
