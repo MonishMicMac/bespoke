@@ -2,7 +2,9 @@
 use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\AppBannerController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\DesignerController;
 use App\Http\Controllers\PromocodeController;
+use App\Http\Controllers\SpotlightController;
 use App\Http\Controllers\SubCatController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\VendorController;
@@ -78,5 +80,19 @@ Route::middleware(['admin'])->group(function () {
     Route::post('/vendor/update/{id}', [VendorController::class, 'update'])->name('vendor.update');
     Route::delete('/vendor/delete/{id}', [VendorController::class, 'destroy'])->name('vendor.delete');
     Route::post('/vendor/update-status', [VendorController::class, 'updateStatus'])->name('vendor.updateStatus');
+
+    Route::get('/create/spotlight', [SpotlightController::class, 'index'])->name('spotlight.create');
+    Route::post('/store/spotlight', [SpotlightController::class, 'store'])->name('spotlight.store');
+    Route::get('/edit/{id}/spotlight', [SpotlightController::class, 'edit'])->name('spotlight.edit');
+    Route::put('/update/{id}/spotlight', [SpotlightController::class, 'update'])->name('spotlight.update');
+    Route::delete('/delete/{id}/spotlight', [SpotlightController::class, 'destroy'])->name('spotlight.destroy');
+
+    Route::get('/create/designer', [DesignerController::class, 'index'])->name('designer.create');
+
+
+
+
+
+
 
 });
