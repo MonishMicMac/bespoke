@@ -25,7 +25,7 @@ class CategoryController extends Controller
         // Check if both categories and subcategories exist
         if ($categoriesview->isEmpty() && $subcategoriesview->isEmpty()) {
             return response()->json([
-                'status' => 'Error',
+                'status' => 'false',
                 'message' => 'No records found',
             ]);
         }
@@ -38,7 +38,7 @@ class CategoryController extends Controller
 
         // Return success response with categories (including nested subcategories)
         return response()->json([
-            'status' => 'Success',
+            'status' => 'true',
             'message' => 'Data retrieved successfully',
             'categories' => $categoriesview,
         ]);
