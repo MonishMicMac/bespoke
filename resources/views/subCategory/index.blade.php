@@ -37,7 +37,7 @@
                 <th>ID</th>
                 <th>Category</th>
                 <th>Subcategory Name</th>
-              <th>Image</th>
+                <th>Image</th>
                 <th>Actions</th>
             </tr>
         </thead>
