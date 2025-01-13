@@ -1,7 +1,7 @@
 @include('layout.header')
 
 <div class="container">
-    <h2>Create New Top Designer</h2>
+    <h2>Edit Top Designer</h2>
 
     <!-- Display validation errors -->
 
@@ -26,27 +26,36 @@
 
 
     <!-- Banner Creation Form -->
-    <form action="{{route('designer.store')}}" method="POST" enctype="multipart/form-data" id="designerForm">
+    <form action="{{route('designer.update' , $designeredits->id)}}" method="POST" enctype="multipart/form-data" id="designerForm">
         @csrf
+        @method('PUT')
 
 
         <div class="form-group">
             <label class="form-label" for="designer_name">Designer Name</label>
-            <input type="text" class="form-control" name="designer_name" id="designer_name">
+            <input type="text" class="form-control" name="designer_name" id="designer_name" value="{{$designeredits->designer_name}}">
         </div>
 
 
+        <div class="mb-3">
+            <label for="img_path" class="form-label">Designer Image</label>
+            @if ($designeredits->designer_image)
+                <div>
+                    <img src="{{ asset('designerimages/' . $designeredits->designer_image) }}" alt="Background Image"
+                        width="100">
+                </div>
+            @endif
+            <input type="file" class="form-control" id="img_path" name="img_path" accept="image/*">
 
-        <div class="form-group">
-            <label class="form-label" for="img_path">Designer Image <small>(960x576)</small></label>
-            <input type="file" name="img_path" class="form-control" id="imgInput" required
-                onchange="previewImage(event)">
-            <small id="imgError" class="text-danger"></small> <!-- Error message will appear here -->
+            {{-- Display validation error for img_path field --}}
+            @if ($errors->has('img_path'))
+                <div class="text-danger">{{ $errors->first('img_path') }}</div>
+            @endif
         </div>
 
         <div class="form-group">
             <label class="form-label" for="designer_title">Designer Title</label>
-            <input type="text" class="form-control" name="designer_title" id="designer_title">
+            <input type="text" class="form-control" name="designer_title" id="designer_title" value="{{$designeredits->designer_title}}">
         </div>
 
 
@@ -59,71 +68,13 @@
             <button type="button" id="removeBtn" class="btn btn-danger" onclick="removeImage()">Remove</button>
         </div>
 
-        <button type="submit" class="btn btn-primary" id="submitBtn">Add Designers</button>
+        <button type="submit" class="btn btn-primary" id="submitBtn">Update Designers</button>
     </form>
 
-    <!-- Data Table Section for Existing Banners -->
-    <div class="mt-5">
-        <h2>Existing Designer</h2>
-        <table id="DesignerTable" class="table table-striped table-bordered">
-            <thead>
-                <tr>
-                    <th>S.no</th>
-                    <th>Designer Image</th>
-                    <th>Designer Name</th>
-                    <th>Designer Title</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                @php $no = 0; @endphp
-                <!-- Loop through the spotlights and display them in the table -->
-                @foreach($designers as $designer)
-                    <tr>
-                        <td>{{ ++$no }}</td>
-                        <td>
-                            <a href="{{ asset('designerimages/' . $designer->designer_image) }}" target="_blank">
-                                <img src="{{ asset('designerimages/' . $designer->designer_image) }}" alt="Spotlight Image"
-                                    style="width: 100px;">
-                            </a>
-                        </td>
-                        <td>{{ ucfirst($designer->designer_name) }}</td>
-                        <td>{{ ucfirst($designer->designer_title) }}</td>
 
-                        <td>
-                            <a href="{{ route('designer.edit', $designer->id) }}" class="btn btn-warning btn-sm">Edit</a>
-
-                            <form action="{{ route('designer.delete', $designer->id) }}" method="POST" class="delete-form"
-                                style="display:inline;">
-                                @csrf
-                                @method('DELETE')
-                                <button type="button" class="btn btn-danger btn-sm delete-btn">Delete</button>
-                            </form>
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
     </div>
 
-    <!-- Modal for Image Preview -->
-    <div class="modal" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="imageModalLabel">Image Preview</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <img id="modalImage" src="" alt="Large Preview" class="img-fluid"
-                        style="max-width: 100%; max-height: 400px;">
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
+
 
     @include('layout.footer')
 

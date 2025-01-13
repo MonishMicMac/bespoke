@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\api\AppBannerController;
 use App\Http\Controllers\api\CategoryController;
+use App\Http\Controllers\api\DesignerController;
 use App\Http\Controllers\api\SpotlightController;
 use App\Http\Controllers\Api\UsersController;
 use App\Http\Controllers\Api\VendorController;
@@ -41,6 +42,9 @@ Route::get('category/view', [CategoryController::class, 'view']);
 Route::get('homepage/view', [AppBannerController::class, 'homepageview']);
 
 Route::get('spotlight/view', [SpotlightController::class, 'spotlistview']);
+
+Route::get('designer/view', [DesignerController::class, 'designerview']);
+
 
 
 

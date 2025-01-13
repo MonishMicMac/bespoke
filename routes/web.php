@@ -8,6 +8,9 @@ use App\Http\Controllers\SpotlightController;
 use App\Http\Controllers\SubCatController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\VendorController;
+use Illuminate\Support\Facades\Route;
+
+
 
 // Admin login routes
 Route::get('/admin/login', function () {
@@ -88,6 +91,14 @@ Route::middleware(['admin'])->group(function () {
     Route::delete('/delete/{id}/spotlight', [SpotlightController::class, 'destroy'])->name('spotlight.destroy');
 
     Route::get('/create/designer', [DesignerController::class, 'index'])->name('designer.create');
+    Route::post('/store/designer', [DesignerController::class, 'store'])->name('designer.store');
+    Route::get('/edit/{id}/designer', [DesignerController::class, 'edit'])->name('designer.edit');
+    Route::put('/update/{id}/designer', [DesignerController::class, 'update'])->name('designer.update');
+    Route::delete('/delete/{id}/designer', [DesignerController::class, 'delete'])->name('designer.delete');
+
+
+
+
 
 
 
