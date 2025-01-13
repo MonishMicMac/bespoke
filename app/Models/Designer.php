@@ -10,4 +10,9 @@ class Designer extends Model
     use HasFactory;
 
     protected $table = 'designer';
+    protected $fillable = [
+        'designer_name',
+        'designer_image',
+        'title',
+    ];
 }
