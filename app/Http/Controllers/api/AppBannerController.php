@@ -11,7 +11,7 @@ class AppBannerController extends Controller
     public function homepageview()
     {
         // Retrieve all banners
-        $banners = AppBanner::select('id', 'img_path', 'type', 'navigate', 'searchfield')->get();
+        $banners = AppBanner::select('id', 'img_path', 'type', 'navigate', 'searchfield_id','searchfield_text')->get();
 
         // Check if banners data exists
         if ($banners->isEmpty()) {

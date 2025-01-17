@@ -17,6 +17,8 @@
                 <li><a href="/create/promocode"><i class="mdi mdi-circle"></i>Add PromoCode</a></li>
                 <li><a href={{route('spotlight.create')}}><i class="mdi mdi-circle"></i>Add Shops in Spotlight</a></li>
                 <li><a href={{route('designer.create')}}><i class="mdi mdi-circle"></i>Add Top New Designer</a></li>
+                <li><a href={{route('currentdeals.create')}}><i class="mdi mdi-circle"></i>Add Top Current Deals</a></li>
+                <li><a href={{route('supersaverdeals.create')}}><i class="mdi mdi-circle"></i>Add Super Save Deals</a></li>
 
 
             </ul>

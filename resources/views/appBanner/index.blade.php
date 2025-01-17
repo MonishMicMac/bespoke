@@ -49,17 +49,19 @@
             <label for="type">Navigate</label>
             <select id="navigateType" name="navigate" class="form-control" required>
                 <option value="">--Select--</option>
-                <option value="Navigate to Product">Navigate to Product</option>
-                <option value="Navigate to Shop or Designer">Navigate to Shop or Designer</option>
+                <option value="1">Navigate to Product</option>
+                <option value="2">Navigate to Shop or Designer</option>
             </select>
         </div>
 
         <div class="form-group">
             <label for="details">Search Field</label>
-            <select id="searchField" name="searchfield" class="form-control" required>
+            <select id="searchfield_id" name="searchfield_id" class="form-control" required>
                 <!-- Options will be dynamically updated based on selection -->
             </select>
         </div>
+
+        <input type="hidden" id="searchfield_text" name="searchfield_text" />
 
         <!-- Image Preview Section -->
         <div id="imagePreviewContainer" class="mt-3" style="display:none;">
@@ -100,20 +102,10 @@
 
                                     </td>
                                     <td>{{ ucfirst($banner->type) }}</td>
-                                    <td>{{ ucfirst($banner->navigate) }}</td>
                                     <td>
-                                        @php
-                                            if ($banner->searchfield) {
-                                                $product = \App\Models\Product::find($banner->searchfield);  // Fetch product by ID
-                                            }
-                                        @endphp
-
-                                        @if(isset($product))
-                                            {{ ucfirst($product->product_name) }} <!-- Display product name -->
-                                        @else
-                                            Product not found
-                                        @endif
+                                        {{ $banner->navigate == 1 ? 'Navigate to Product' : 'Navigate to Shop or Designer' }}
                                     </td>
+                                    <td>{{ ucfirst($banner->searchfield_text) }}</td>
 
                                     <td>
                                         <!-- Action buttons (e.g., edit or delete) -->
@@ -266,7 +258,8 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const navigateType = document.getElementById('navigateType');
-        const searchField = document.getElementById('searchField');
+        const searchField_id = document.getElementById('searchfield_id');
+        const searchFieldText = document.getElementById('searchfield_text');
 
         const productDetails = @json($productdetails);
         const vendorDetails = @json($vendordetails);
@@ -274,26 +267,35 @@
         // Function to update the search field options
         function updateSearchField() {
             // Clear existing options
-            searchField.innerHTML = '';
+            searchField_id.innerHTML = '';
 
-            if (navigateType.value === 'Navigate to Product') {
+            if (navigateType.value === '1') {
                 // Populate with product details
                 productDetails.forEach(product => {
                     const option = document.createElement('option');
                     option.value = product.id;
                     option.textContent = product.product_name;
-                    searchField.appendChild(option);
+                    searchField_id.appendChild(option);
                 });
-            } else if (navigateType.value === 'Navigate to Shop or Designer') {
+            } else if (navigateType.value === '2') {
                 // Populate with vendor details
                 vendorDetails.forEach(vendor => {
                     const option = document.createElement('option');
                     option.value = vendor.id;
                     option.textContent = vendor.shop_name;
-                    searchField.appendChild(option);
+                    searchField_id.appendChild(option);
                 });
             }
+
+            // Trigger change to update the hidden input for the initial selection
+            searchField_id.dispatchEvent(new Event('change'));
         }
+
+        // Update hidden input when the selection changes
+        searchField_id.addEventListener('change', function () {
+            const selectedOption = searchField_id.options[searchField_id.selectedIndex];
+            searchFieldText.value = selectedOption ? selectedOption.textContent : '';
+        });
 
         // Add event listener for changes in the navigate type dropdown
         navigateType.addEventListener('change', updateSearchField);

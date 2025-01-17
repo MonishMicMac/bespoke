@@ -13,6 +13,9 @@ class Designer extends Model
     protected $fillable = [
         'designer_name',
         'designer_image',
-        'title',
+        'designer_title',
+        'navigate',
+        'searchfield_id',
+        'searchfield_text'
     ];
 }

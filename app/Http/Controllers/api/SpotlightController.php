@@ -11,7 +11,7 @@ class SpotlightController extends Controller
     public function spotlistview()
     {
         // Fetch data from the Spotlight table
-        $spotlist = Spotlight::select('shop_id', 'shop_name', 'background_image', 'price', 'title', 'brand_name')
+        $spotlist = Spotlight::select('id','shop_id', 'shop_name', 'background_image', 'price', 'title', 'brand_name','navigate','searchfield_id','searchfield_text')
             ->where('action', '0')
             ->get();
 

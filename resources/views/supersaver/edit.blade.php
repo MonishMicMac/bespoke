@@ -1,7 +1,7 @@
 @include('layout.header')
 
 <div class="container">
-    <h2>Edit Top Designer</h2>
+    <h2>Edit Super Saver Deals</h2>
 
     <!-- Display validation errors -->
 
@@ -25,23 +25,20 @@
 
 
 
+
+
     <!-- Banner Creation Form -->
-    <form action="{{route('designer.update' , $designeredits->id)}}" method="POST" enctype="multipart/form-data" id="designerForm">
+    <form action="{{route('supersaverdeals.update',$supersaveredit->id)}}" method="POST" enctype="multipart/form-data" id="designerForm">
         @csrf
         @method('PUT')
 
 
-        <div class="form-group">
-            <label class="form-label" for="designer_name">Designer Name</label>
-            <input type="text" class="form-control" name="designer_name" id="designer_name" value="{{$designeredits->designer_name}}">
-        </div>
-
 
         <div class="mb-3">
-            <label for="img_path" class="form-label">Designer Image</label>
-            @if ($designeredits->designer_image)
+            <label for="img_path" class="form-label">Super Saver Deals Image</label>
+            @if ($supersaveredit->super_save_deals_image)
                 <div>
-                    <img src="{{ asset('designerimages/' . $designeredits->designer_image) }}" alt="Background Image"
+                    <img src="{{ asset('supersaverdealsimages/' . $supersaveredit->super_save_deals_image) }}" alt="Background Image"
                         width="100">
                 </div>
             @endif
@@ -54,16 +51,26 @@
         </div>
 
         <div class="form-group">
-            <label class="form-label" for="designer_title">Designer Title</label>
-            <input type="text" class="form-control" name="designer_title" id="designer_title" value="{{$designeredits->designer_title}}">
+            <label class="form-label" for="super_save_deals_title">Super Saver Deals Title</label>
+            <input type="text" class="form-control" name="super_save_deals_title" id="super_save_deals_title" value="{{$supersaveredit->super_save_deals_title}}">
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="super_save_deals_price">Super Saver Deals Price</label>
+            <input type="text" class="form-control" name="super_save_deals_price" id="super_save_deals_price" value="{{$supersaveredit->super_save_deals_price}}">
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="super_save_deals_brand_name">Super Saver Deals Price</label>
+            <input type="text" class="form-control" name="super_save_deals_brand_name" id="super_save_deals_brand_name" value="{{$supersaveredit->super_save_deals_brand_name}}">
         </div>
 
         <div class="form-group">
             <label for="type">Navigate</label>
             <select id="navigateType" name="navigate" class="form-control" required>
                 <option value="">--Select--</option>
-                <option value="1" {{ $designeredits->navigate == '1' ? 'selected' : '' }}>Navigate to Product</option>
-                <option value="2" {{ $designeredits->navigate == '2' ? 'selected' : '' }}>Navigate to Shop or Designer</option>
+                <option value="1" {{ $supersaveredit->navigate == '1' ? 'selected' : '' }}>Navigate to Product</option>
+                <option value="2" {{ $supersaveredit->navigate == '2' ? 'selected' : '' }}>Navigate to Shop or Designer</option>
             </select>
         </div>
 
@@ -86,12 +93,11 @@
             <button type="button" id="removeBtn" class="btn btn-danger" onclick="removeImage()">Remove</button>
         </div>
 
-        <button type="submit" class="btn btn-primary" id="submitBtn">Update Designers</button>
+        <button type="submit" class="btn btn-primary" id="submitBtn">Update Current Deals</button>
     </form>
 
 
     </div>
-
 
 
     @include('layout.footer')
@@ -204,53 +210,53 @@
             });
         });
     </script>
-   <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const navigateType = document.getElementById('navigateType');
-        const searchField_id = document.getElementById('searchfield_id');
-        const searchFieldText = document.getElementById('searchfield_text');
+          <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const navigateType = document.getElementById('navigateType');
+                const searchField_id = document.getElementById('searchfield_id');
+                const searchFieldText = document.getElementById('searchfield_text');
 
-        const productDetails = @json($productdetails);
-        const vendorDetails = @json($vendordetails);
+                const productDetails = @json($productdetails);
+                const vendorDetails = @json($vendordetails);
 
-        // Function to update the search field options
-        function updateSearchField() {
-            // Clear existing options
-            searchField_id.innerHTML = '';
+                // Function to update the search field options
+                function updateSearchField() {
+                    // Clear existing options
+                    searchField_id.innerHTML = '';
 
-            if (navigateType.value === '1') {
-                // Populate with product details
-                productDetails.forEach(product => {
-                    const option = document.createElement('option');
-                    option.value = product.id;
-                    option.textContent = product.product_name;
-                    searchField_id.appendChild(option);
+                    if (navigateType.value === '1') {
+                        // Populate with product details
+                        productDetails.forEach(product => {
+                            const option = document.createElement('option');
+                            option.value = product.id;
+                            option.textContent = product.product_name;
+                            searchField_id.appendChild(option);
+                        });
+                    } else if (navigateType.value === '2') {
+                        // Populate with vendor details
+                        vendorDetails.forEach(vendor => {
+                            const option = document.createElement('option');
+                            option.value = vendor.id;
+                            option.textContent = vendor.shop_name;
+                            searchField_id.appendChild(option);
+                        });
+                    }
+
+                    // Trigger change to update the hidden input for the initial selection
+                    searchField_id.dispatchEvent(new Event('change'));
+                }
+
+                // Update hidden input when the selection changes
+                searchField_id.addEventListener('change', function () {
+                    const selectedOption = searchField_id.options[searchField_id.selectedIndex];
+                    searchFieldText.value = selectedOption ? selectedOption.textContent : '';
                 });
-            } else if (navigateType.value === '2') {
-                // Populate with vendor details
-                vendorDetails.forEach(vendor => {
-                    const option = document.createElement('option');
-                    option.value = vendor.id;
-                    option.textContent = vendor.shop_name;
-                    searchField_id.appendChild(option);
-                });
-            }
 
-            // Trigger change to update the hidden input for the initial selection
-            searchField_id.dispatchEvent(new Event('change'));
-        }
+                // Add event listener for changes in the navigate type dropdown
+                navigateType.addEventListener('change', updateSearchField);
 
-        // Update hidden input when the selection changes
-        searchField_id.addEventListener('change', function () {
-            const selectedOption = searchField_id.options[searchField_id.selectedIndex];
-            searchFieldText.value = selectedOption ? selectedOption.textContent : '';
-        });
-
-        // Add event listener for changes in the navigate type dropdown
-        navigateType.addEventListener('change', updateSearchField);
-
-        // Initialize with the default selection
-        updateSearchField();
-    });
-</script>
+                // Initialize with the default selection
+                updateSearchField();
+            });
+        </script>
 

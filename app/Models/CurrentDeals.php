@@ -1,14 +1,12 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class AppBanner extends Model
+class CurrentDeals extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['img_path', 'type', 'navigate', 'searchfield_id','searchfield_text', 'action'];
 }
-
-

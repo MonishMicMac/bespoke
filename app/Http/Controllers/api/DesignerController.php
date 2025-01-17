@@ -8,8 +8,8 @@ use Illuminate\Http\Request;
 
 class DesignerController extends Controller
 {
-    public function topdesigner(){
-        $topdesigner = Designer::select('id','designer_image','designer_title')->where('action','0')->get();
+    public function designerview(){
+        $topdesigner = Designer::select('id','designer_image','designer_title','navigate','searchfield_id','searchfield_text')->where('action','0')->get();
         if($topdesigner->isEmpty()){
             return response()->json([
                 'status'=> false,

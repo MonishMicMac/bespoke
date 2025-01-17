@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
 use App\Models\Spotlight;
 use App\Models\VendorLogin;
 use Illuminate\Http\Request;
@@ -12,8 +13,9 @@ class SpotlightController extends Controller
     {
 
         $spotlight = Spotlight::all()->where('action', '0');
+        $productdetails = Product::all();
         $vendordetails = VendorLogin::all();
-        return view('spotlight.index', ['spotlights' => $spotlight, 'vendordetails' => $vendordetails]);
+        return view('spotlight.index', ['spotlights' => $spotlight,'productdetails'=>$productdetails, 'vendordetails' => $vendordetails]);
     }
     public function store(Request $request)
     {
@@ -27,7 +29,10 @@ class SpotlightController extends Controller
             'img_path' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Validate the image file
             'price' => 'required|numeric',
             'title' => 'required',
-            'brand_name' => 'required'
+            'brand_name' => 'required',
+            'navigate' => 'required',
+            'searchfield_id' => 'required',
+            'searchfield_text' => 'required',
         ]);
 
         // Handle the image upload
@@ -45,6 +50,9 @@ class SpotlightController extends Controller
         $spotlight->price = $request->price;
         $spotlight->title = $request->title;
         $spotlight->brand_name = $request->brand_name;
+        $spotlight->navigate = $request->navigate;
+        $spotlight->searchfield_id = $request->searchfield_id;
+        $spotlight->searchfield_text = $request->searchfield_text;
         $spotlight->save();
 
         // Return success response or redirect
@@ -53,8 +61,9 @@ class SpotlightController extends Controller
     public function edit($id)
     {
         $spotlightedit = Spotlight::where('id', $id)->first();
+        $productdetails = Product::all();
         $vendordetails = VendorLogin::all();
-        return view('spotlight.edit', ['spotlightedit' => $spotlightedit, 'vendordetails' => $vendordetails]);
+        return view('spotlight.edit', ['spotlightedit' => $spotlightedit,'productdetails'=>$productdetails, 'vendordetails' => $vendordetails]);
     }
     public function update(Request $request, $id)
     {
@@ -71,6 +80,9 @@ class SpotlightController extends Controller
             'price' => 'required',
             'title' => 'required',
             'brand_name' => 'required',
+            'navigate' => 'required',
+            'searchfield_id' => 'required',
+            'searchfield_text' => 'required',
         ]);
 
         if ($request->hasFile('img_path')) {
@@ -84,6 +96,9 @@ class SpotlightController extends Controller
         $spotlightupdate->price = $request->price;
         $spotlightupdate->title = $request->title;
         $spotlightupdate->brand_name = $request->brand_name; // Corrected the property name
+        $spotlightupdate->navigate = $request->navigate;
+        $spotlightupdate->searchfield_id = $request->searchfield_id;
+        $spotlightupdate->searchfield_text = $request->searchfield_text;
         $spotlightupdate->save();
 
         return redirect()->route('spotlight.create')->with('success', 'Spotlight updated successfully.');

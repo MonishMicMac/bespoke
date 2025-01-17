@@ -1,7 +1,7 @@
 @include('layout.header')
 
 <div class="container">
-    <h2>Create New Shop in Spotlight</h2>
+    <h2>Create New Top Current Deals</h2>
 
     <!-- Display validation errors -->
 
@@ -26,45 +26,36 @@
 
 
     <!-- Banner Creation Form -->
-    <form action="{{route('spotlight.store')}}" method="POST" enctype="multipart/form-data" id="spotlightForm">
+    <form action="{{route('currentdeals.store')}}" method="POST" enctype="multipart/form-data" id="designerForm">
         @csrf
 
 
         <div class="form-group">
-            <label for="shop_name">Shop Name</label>
-            <select name="shop_name" id="shop_name" class="form-control" required>
-                <option value="">--Select--</option>
-                @foreach($vendordetails as $vendor)
-                    <option value="{{ $vendor->shop_name }}" data-id="{{ $vendor->id }}">
-                        {{ $vendor->shop_name }}
-                    </option>
+            <label class="form-label" for="shop_name">Shop Name</label>
+            <select class="form-control" name="shop_name" id="shop_name">
+                <option value="">Select</option>
+                @foreach ($vendoroption as $vendoroption)
+                <option value="{{$vendoroption->shop_name}}">{{$vendoroption->shop_name}}</option>
                 @endforeach
             </select>
         </div>
 
-        <input type="hidden" name="shop_id" id="shop_id" class="form-control" readonly value="">
-
 
         <div class="form-group">
-            <label for="img_path">Background Image <small>(960x576)</small></label>
+            <label class="form-label" for="img_path">Current Deals Image <small>(960x576)</small></label>
             <input type="file" name="img_path" class="form-control" id="imgInput" required
                 onchange="previewImage(event)">
             <small id="imgError" class="text-danger"></small> <!-- Error message will appear here -->
         </div>
 
         <div class="form-group">
-            <label for="price">Price</label>
-            <input type="text" class="form-control" name="price" id="price">
+            <label class="form-label" for="current_deals_title">Current Deals Title</label>
+            <input type="text" class="form-control" name="current_deals_title" id="current_deals_title">
         </div>
 
         <div class="form-group">
-            <label for="title">Title</label>
-            <input type="text" class="form-control" name="title" id="title">
-        </div>
-
-        <div class="form-group">
-            <label for="brand_name">Brand Name</label>
-            <input type="text" class="form-control" name="brand_name" id="brand_name">
+            <label class="form-label" for="current_deals_price">Current Deals Price</label>
+            <input type="text" class="form-control" name="current_deals_price" id="current_deals_price">
         </div>
 
         <div class="form-group">
@@ -85,6 +76,10 @@
 
         <input type="hidden" id="searchfield_text" name="searchfield_text" />
 
+
+
+
+
         <!-- Image Preview Section -->
         <div id="imagePreviewContainer" class="mt-3" style="display:none;">
             <img id="imagePreview" src="" alt="Image Preview" style="width: 200px; cursor: pointer;"
@@ -93,21 +88,20 @@
             <button type="button" id="removeBtn" class="btn btn-danger" onclick="removeImage()">Remove</button>
         </div>
 
-        <button type="submit" class="btn btn-primary" id="submitBtn">Create Spotlight</button>
+        <button type="submit" class="btn btn-primary" id="submitBtn">Add Current Deals</button>
     </form>
 
     <!-- Data Table Section for Existing Banners -->
     <div class="mt-5">
-        <h2>Existing Spotlights</h2>
-        <table id="spotlightTable" class="table table-striped table-bordered">
+        <h2>Existing Current Deals</h2>
+        <table id="DesignerTable" class="table table-striped table-bordered">
             <thead>
                 <tr>
                     <th>S.no</th>
-                    <th>Image</th>
+                    <th>Current Deals Image</th>
                     <th>Shop Name</th>
-                    <th>Price</th>
-                    <th>Title</th>
-                    <th>Brand Name</th>
+                    <th>Current Deals Title</th>
+                    <th>Current Deals Price</th>
                     <th>Navigate</th>
                     <th>Search Field</th>
                     <th>Action</th>
@@ -116,28 +110,29 @@
             <tbody>
                 @php $no = 0; @endphp
                 <!-- Loop through the spotlights and display them in the table -->
-                @foreach($spotlights as $spotlight)
+                @foreach($currentdeals as $currentdeals)
                     <tr>
                         <td>{{ ++$no }}</td>
                         <td>
-                            <a href="{{ asset('spotlightimages/' . $spotlight->background_image) }}" target="_blank">
-                                <img src="{{ asset('spotlightimages/' . $spotlight->background_image) }}"
-                                    alt="Spotlight Image" style="width: 100px;">
+                            <a href="{{ asset('currentdealsimages/' . $currentdeals->current_deals_image) }}" target="_blank">
+                                <img src="{{ asset('currentdealsimages/' . $currentdeals->current_deals_image) }}" alt="Spotlight Image"
+                                    style="width: 100px;">
                             </a>
                         </td>
-                        <td>{{ ucfirst($spotlight->shop_name) }}</td>
-                        <td>{{ ucfirst($spotlight->price) }}</td>
-                        <td>{{ ucfirst($spotlight->title) }}</td>
-                        <td>{{ ucfirst($spotlight->brand_name) }}</td>
+                        <td>{{ ucfirst($currentdeals->shop_name) }}</td>
+                        <td>{{ ucfirst($currentdeals->current_deals_title) }}</td>
+                        <td>{{ ucfirst($currentdeals->current_deals_price) }}</td>
                         <td>
-                            {{ $spotlight->navigate == 1 ? 'Navigate to Product' : 'Navigate to Shop or Designer' }}
+                            {{ $currentdeals->navigate == 1 ? 'Navigate to Product' : 'Navigate to Shop or Designer' }}
                         </td>
-                        <td>{{ ucfirst($spotlight->searchfield_text) }}</td>
-                        <td>
-                            <a href="{{ route('spotlight.edit', $spotlight->id) }}" class="btn btn-warning btn-sm">Edit</a>
+                        <td>{{ ucfirst($currentdeals->searchfield_text) }}</td>
 
-                            <form action="{{ route('spotlight.destroy', $spotlight->id) }}" method="POST"
-                                class="delete-form" style="display:inline;">
+
+                        <td>
+                            <a href="{{route('currentdeals.edit',$currentdeals->id)}}" class="btn btn-warning btn-sm">Edit</a>
+
+                            <form action="{{ route('currentdeals.delete', $currentdeals->id) }}" method="POST" class="delete-form"
+                                style="display:inline;">
                                 @csrf
                                 @method('DELETE')
                                 <button type="button" class="btn btn-danger btn-sm delete-btn">Delete</button>
@@ -180,11 +175,11 @@
     <script>
         // Initialize DataTable
         $(document).ready(function () {
-            $('#spotlightTable').DataTable();
+            $('#DesignerTable').DataTable();
         });
 
         // Disable submit button after form submission to prevent multiple submissions
-        document.getElementById('spotlightForm').onsubmit = function () {
+        document.getElementById('designerForm').onsubmit = function () {
             document.getElementById('submitBtn').disabled = true;
             document.getElementById('submitBtn').innerText = 'Submitting...';
         };
@@ -278,70 +273,53 @@
             });
         });
     </script>
-    <script>
-        document.getElementById('shop_name').addEventListener('change', function () {
-            const selectedOption = this.options[this.selectedIndex];
-            const vendorId = selectedOption.getAttribute('data-id');
+     <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const navigateType = document.getElementById('navigateType');
+            const searchField_id = document.getElementById('searchfield_id');
+            const searchFieldText = document.getElementById('searchfield_text');
 
-            // Update the shop_id dropdown
-            const shopIdSelect = document.getElementById('shop_id');
-            shopIdSelect.innerHTML = ''; // Clear existing options
+            const productDetails = @json($productdetails);
+            const vendorDetails = @json($vendordetails);
 
-            if (vendorId) {
-                // Create a new option for the selected vendor ID
-                const newOption = document.createElement('option');
-                newOption.value = vendorId;
-                newOption.textContent = vendorId;
-                shopIdSelect.appendChild(newOption);
+            // Function to update the search field options
+            function updateSearchField() {
+                // Clear existing options
+                searchField_id.innerHTML = '';
+
+                if (navigateType.value === '1') {
+                    // Populate with product details
+                    productDetails.forEach(product => {
+                        const option = document.createElement('option');
+                        option.value = product.id;
+                        option.textContent = product.product_name;
+                        searchField_id.appendChild(option);
+                    });
+                } else if (navigateType.value === '2') {
+                    // Populate with vendor details
+                    vendorDetails.forEach(vendor => {
+                        const option = document.createElement('option');
+                        option.value = vendor.id;
+                        option.textContent = vendor.shop_name;
+                        searchField_id.appendChild(option);
+                    });
+                }
+
+                // Trigger change to update the hidden input for the initial selection
+                searchField_id.dispatchEvent(new Event('change'));
             }
+
+            // Update hidden input when the selection changes
+            searchField_id.addEventListener('change', function () {
+                const selectedOption = searchField_id.options[searchField_id.selectedIndex];
+                searchFieldText.value = selectedOption ? selectedOption.textContent : '';
+            });
+
+            // Add event listener for changes in the navigate type dropdown
+            navigateType.addEventListener('change', updateSearchField);
+
+            // Initialize with the default selection
+            updateSearchField();
         });
     </script>
-   <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const navigateType = document.getElementById('navigateType');
-        const searchField_id = document.getElementById('searchfield_id');
-        const searchFieldText = document.getElementById('searchfield_text');
 
-        const productDetails = @json($productdetails);
-        const vendorDetails = @json($vendordetails);
-
-        // Function to update the search field options
-        function updateSearchField() {
-            // Clear existing options
-            searchField_id.innerHTML = '';
-
-            if (navigateType.value === '1') {
-                // Populate with product details
-                productDetails.forEach(product => {
-                    const option = document.createElement('option');
-                    option.value = product.id;
-                    option.textContent = product.product_name;
-                    searchField_id.appendChild(option);
-                });
-            } else if (navigateType.value === '2') {
-                // Populate with vendor details
-                vendorDetails.forEach(vendor => {
-                    const option = document.createElement('option');
-                    option.value = vendor.id;
-                    option.textContent = vendor.shop_name;
-                    searchField_id.appendChild(option);
-                });
-            }
-
-            // Trigger change to update the hidden input for the initial selection
-            searchField_id.dispatchEvent(new Event('change'));
-        }
-
-        // Update hidden input when the selection changes
-        searchField_id.addEventListener('change', function () {
-            const selectedOption = searchField_id.options[searchField_id.selectedIndex];
-            searchFieldText.value = selectedOption ? selectedOption.textContent : '';
-        });
-
-        // Add event listener for changes in the navigate type dropdown
-        navigateType.addEventListener('change', updateSearchField);
-
-        // Initialize with the default selection
-        updateSearchField();
-    });
-</script>

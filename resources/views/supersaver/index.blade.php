@@ -1,7 +1,7 @@
 @include('layout.header')
 
 <div class="container">
-    <h2>Edit Top Designer</h2>
+    <h2>Create New Super Saver Deals</h2>
 
     <!-- Display validation errors -->
 
@@ -26,44 +26,38 @@
 
 
     <!-- Banner Creation Form -->
-    <form action="{{route('designer.update' , $designeredits->id)}}" method="POST" enctype="multipart/form-data" id="designerForm">
+    <form action="{{route('supersaverdeals.store')}}" method="POST" enctype="multipart/form-data" id="designerForm">
         @csrf
-        @method('PUT')
-
 
         <div class="form-group">
-            <label class="form-label" for="designer_name">Designer Name</label>
-            <input type="text" class="form-control" name="designer_name" id="designer_name" value="{{$designeredits->designer_name}}">
+            <label class="form-label" for="img_path">Super Saver Deals Image <small>(960x576)</small></label>
+            <input type="file" name="img_path" class="form-control" id="imgInput" required
+                onchange="previewImage(event)">
+            <small id="imgError" class="text-danger"></small> <!-- Error message will appear here -->
         </div>
 
 
-        <div class="mb-3">
-            <label for="img_path" class="form-label">Designer Image</label>
-            @if ($designeredits->designer_image)
-                <div>
-                    <img src="{{ asset('designerimages/' . $designeredits->designer_image) }}" alt="Background Image"
-                        width="100">
-                </div>
-            @endif
-            <input type="file" class="form-control" id="img_path" name="img_path" accept="image/*">
-
-            {{-- Display validation error for img_path field --}}
-            @if ($errors->has('img_path'))
-                <div class="text-danger">{{ $errors->first('img_path') }}</div>
-            @endif
+        <div class="form-group">
+            <label class="form-label" for="super_save_deals_title">Super Saver Deals Title</label>
+            <input type="text" class="form-control" name="super_save_deals_title" id="super_save_deals_title">
         </div>
 
         <div class="form-group">
-            <label class="form-label" for="designer_title">Designer Title</label>
-            <input type="text" class="form-control" name="designer_title" id="designer_title" value="{{$designeredits->designer_title}}">
+            <label class="form-label" for="super_save_deals_price">Super Saver Deals Price</label>
+            <input type="text" class="form-control" name="super_save_deals_price" id="super_save_deals_price">
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="super_save_deals_brand_name">Super Saver Deals Brand Name</label>
+            <input type="text" class="form-control" name="super_save_deals_brand_name" id="super_save_deals_brand_name">
         </div>
 
         <div class="form-group">
             <label for="type">Navigate</label>
             <select id="navigateType" name="navigate" class="form-control" required>
                 <option value="">--Select--</option>
-                <option value="1" {{ $designeredits->navigate == '1' ? 'selected' : '' }}>Navigate to Product</option>
-                <option value="2" {{ $designeredits->navigate == '2' ? 'selected' : '' }}>Navigate to Shop or Designer</option>
+                <option value="1">Navigate to Product</option>
+                <option value="2">Navigate to Shop or Designer</option>
             </select>
         </div>
 
@@ -77,7 +71,6 @@
         <input type="hidden" id="searchfield_text" name="searchfield_text" />
 
 
-
         <!-- Image Preview Section -->
         <div id="imagePreviewContainer" class="mt-3" style="display:none;">
             <img id="imagePreview" src="" alt="Image Preview" style="width: 200px; cursor: pointer;"
@@ -86,13 +79,80 @@
             <button type="button" id="removeBtn" class="btn btn-danger" onclick="removeImage()">Remove</button>
         </div>
 
-        <button type="submit" class="btn btn-primary" id="submitBtn">Update Designers</button>
+        <button type="submit" class="btn btn-primary" id="submitBtn">Add Super Saver Deals</button>
     </form>
 
+    <!-- Data Table Section for Existing Banners -->
+    <div class="mt-5">
+        <h2>Existing Super Saver Deals</h2>
+        <table id="DesignerTable" class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>S.no</th>
+                    <th>Super Saver Deals Image</th>
+                    <th>Super Saver Deals Title</th>
+                    <th>Super Saver Deals Price</th>
+                    <th>Super Saver Deals Brand Name</th>
+                    <th>Navigate</th>
+                    <th>Search Field</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @php $no = 0; @endphp
+                <!-- Loop through the spotlights and display them in the table -->
+                @foreach($supersavedeals as $supersavedeals)
+                    <tr>
+                        <td>{{ ++$no }}</td>
+                        <td>
+                            <a href="{{ asset('supersaverdealsimages/' . $supersavedeals->super_save_deals_image) }}" target="_blank">
+                                <img src="{{ asset('supersaverdealsimages/' . $supersavedeals->super_save_deals_image) }}" alt="Spotlight Image"
+                                    style="width: 100px;">
+                            </a>
+                        </td>
+                        <td>{{ ucfirst($supersavedeals->super_save_deals_title) }}</td>
+                        <td>{{ ucfirst($supersavedeals->super_save_deals_price) }}</td>
+                        <td>{{ ucfirst($supersavedeals->super_save_deals_brand_name) }}</td>
+                        <td>
+                            {{ $supersavedeals->navigate == 1 ? 'Navigate to Product' : 'Navigate to Shop or Designer' }}
+                        </td>
+                        <td>{{ ucfirst($supersavedeals->searchfield_text) }}</td>
 
+
+                        <td>
+                            <a href="{{route('supersaverdeals.edit',$supersavedeals->id)}}" class="btn btn-warning btn-sm">Edit</a>
+
+                            <form action="{{ route('supersaverdeals.delete', $supersavedeals->id) }}" method="POST" class="delete-form"
+                                style="display:inline;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="button" class="btn btn-danger btn-sm delete-btn">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
     </div>
 
-
+    <!-- Modal for Image Preview -->
+    <div class="modal" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="imageModalLabel">Image Preview</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <img id="modalImage" src="" alt="Large Preview" class="img-fluid"
+                        style="max-width: 100%; max-height: 400px;">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     @include('layout.footer')
 
@@ -253,4 +313,3 @@
         updateSearchField();
     });
 </script>
-

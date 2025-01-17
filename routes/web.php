@@ -2,10 +2,12 @@
 use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\AppBannerController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CurrentDealsController;
 use App\Http\Controllers\DesignerController;
 use App\Http\Controllers\PromocodeController;
 use App\Http\Controllers\SpotlightController;
 use App\Http\Controllers\SubCatController;
+use App\Http\Controllers\SuperSaveDealsController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\VendorController;
 use Illuminate\Support\Facades\Route;
@@ -96,13 +98,17 @@ Route::middleware(['admin'])->group(function () {
     Route::put('/update/{id}/designer', [DesignerController::class, 'update'])->name('designer.update');
     Route::delete('/delete/{id}/designer', [DesignerController::class, 'delete'])->name('designer.delete');
 
+    Route::get('/create/currentdeals', [CurrentDealsController::class, 'index'])->name('currentdeals.create');
+    Route::post('/store/currentdeals', [CurrentDealsController::class, 'store'])->name('currentdeals.store');
+    Route::get('/edit/currentdeals/{id}', [CurrentDealsController::class, 'edit'])->name('currentdeals.edit');
+    Route::put('/update/currentdeals/{id}', [CurrentDealsController::class, 'update'])->name('currentdeals.update');
+    Route::delete('/delete/currentdeals/{id}', [CurrentDealsController::class, 'delete'])->name('currentdeals.delete');
 
-
-
-
-
-
-
+    Route::get('/create/supersaverdeals', [SuperSaveDealsController::class, 'index'])->name('supersaverdeals.create');
+    Route::post('/store/supersaverdeals', [SuperSaveDealsController::class, 'store'])->name('supersaverdeals.store');
+    Route::get('/edit/supersaverdeals/{id}', [SuperSaveDealsController::class, 'edit'])->name('supersaverdeals.edit');
+    Route::put('/update/supersaverdeals/{id}', [SuperSaveDealsController::class, 'update'])->name('supersaverdeals.update');
+    Route::delete('/delete/supersaverdeals/{id}', [SuperSaveDealsController::class, 'delete'])->name('supersaverdeals.delete');
 
 
 

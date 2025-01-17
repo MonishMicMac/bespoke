@@ -29,7 +29,8 @@ class AppBannerController extends Controller
             'img_path' => 'required|image|mimes:jpeg,png,jpg,gif|max:5048',
             'type' => 'required|string',
             'navigate' => 'required',
-            'searchfield' => 'required',
+            'searchfield_id' => 'required',
+            'searchfield_text' => 'required',
 
         ]);
 
@@ -40,6 +41,7 @@ class AppBannerController extends Controller
         if ($bannerCount >= 5) {
             return redirect()->route('banners.create')->with('error', 'You can only upload 5 banners');
         }
+        // dd($request->searchfield_id);
 
         // Upload image if there's a file
         if ($request->hasFile('img_path')) {
@@ -51,7 +53,8 @@ class AppBannerController extends Controller
             'img_path' => $imagePath,
             'type' => $request->type,
             'navigate' => $request->navigate,
-            'searchfield' => $request->searchfield,
+            'searchfield_id' => $request->searchfield_id,
+            'searchfield_text' => $request->searchfield_text,
             'action' => '0', // Always inactive by default
         ]);
 
@@ -72,6 +75,9 @@ class AppBannerController extends Controller
         $request->validate([
             'img_path' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'type' => 'required|string',
+            'navigate' => 'required',
+            'searchfield_id' => 'required',
+            'searchfield_text' => 'required',
         ]);
 
         $banner = AppBanner::findOrFail($id);
@@ -80,10 +86,14 @@ class AppBannerController extends Controller
         if ($request->hasFile('img_path')) {
             $imagePath = $request->file('img_path')->store('app_banners', 'public');
             $banner->img_path = $imagePath;
+
         }
 
         // Update the banner details
         $banner->type = $request->type;
+        $banner->navigate = $request->navigate;
+        $banner->searchfield_id = $request->searchfield_id;
+        $banner->searchfield_text = $request->searchfield_text;
         $banner->save();
 
         return redirect()->route('banners.create')->with('success', 'Banner updated successfully.');
