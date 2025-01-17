@@ -2,8 +2,10 @@
 
 use App\Http\Controllers\api\AppBannerController;
 use App\Http\Controllers\api\CategoryController;
+use App\Http\Controllers\api\CurrentDealsController;
 use App\Http\Controllers\api\DesignerController;
 use App\Http\Controllers\api\SpotlightController;
+use App\Http\Controllers\api\SuperSaveDealsController;
 use App\Http\Controllers\Api\UsersController;
 use App\Http\Controllers\Api\VendorController;
 use App\Http\Controllers\SubCatController;
@@ -44,6 +46,12 @@ Route::get('homepage/view', [AppBannerController::class, 'homepageview']);
 Route::get('spotlight/view', [SpotlightController::class, 'spotlistview']);
 
 Route::get('designer/view', [DesignerController::class, 'designerview']);
+
+Route::get('currentdeals/view', [CurrentDealsController::class, 'currentdealsview']);
+
+Route::get('supersavedeals/view', [SuperSaveDealsController::class, 'supersavedealsview']);
+
+
 
 
 
