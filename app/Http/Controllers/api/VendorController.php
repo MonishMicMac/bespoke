@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Http\Controllers\Api;
-
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
 use App\Models\VendorLogin;
 use Illuminate\Http\Request;
@@ -216,5 +217,83 @@ class VendorController extends Controller
         // If successful, you can return some kind of success response, e.g., a token or vendor data
         return response()->json(['message' => 'Login successful', 'vendor' => $vendor], 200);
     }
+
+    public function sendOtp(Request $request)
+{
+  
+    $validator = Validator::make($request->all(), [
+        'email' => 'required|email',
+    ]);
+
+    // Check if validation fails
+    if ($validator->fails()) {
+        return response()->json([
+            'message' => 'Validation failed',
+            'errors' => $validator->errors(),
+        ], 400);
+    }
+
+    // Find vendor by email
+    $vendor = VendorLogin::where('email', $request->email)->first();
+
+    if (!$vendor) {
+        return response()->json(['message' => 'Vendor not found'], 404);
+    }
+
+    // Generate a 6-digit OTP
+    $otp = random_int(100000, 999999);
+
+    // Save OTP and its expiration time (e.g., 10 minutes) in the database
+    $vendor->otp = $otp;
+    $vendor->otp_expires_at = now()->addMinutes(10);
+    $vendor->save();
+
+    // Send OTP to email
+    Mail::raw("Your OTP is: $otp. It is valid for 10 minutes.", function ($message) use ($vendor) {
+        $message->to($vendor->email)
+            ->subject('Password Reset OTP');
+    });
+
+    return response()->json(['message' => 'OTP sent to email successfully'], 200);
+}
+
+public function verifyOtpAndResetPassword(Request $request)
+{
+    // Use the Validator facade to validate the input
+    $validator = Validator::make($request->all(), [
+        'email' => 'required|email',
+        'otp' => 'required|numeric',
+        'new_password' => 'required|string|min:8',
+    ]);
+
+    // Check if validation fails
+    if ($validator->fails()) {
+        return response()->json([
+            'message' => 'Validation failed',
+            'errors' => $validator->errors(),
+        ], 400);
+    }
+
+    // Find vendor by email
+    $vendor = VendorLogin::where('email', $request->email)->first();
+
+    if (!$vendor) {
+        return response()->json(['message' => 'Vendor not found'], 404);
+    }
+
+
+    if ($vendor->otp !== $request->otp ) {
+        return response()->json(['message' => 'Invalid or expired OTP'], 400);
+    }
+
+    $vendor->password = $request->new_password;
+    $vendor->otp = null;
+    $vendor->otp_expires_at = null;
+    $vendor->save();
+
+    return response()->json(['message' => 'Password reset successfully'], 200);
+}
+
+
     
 }

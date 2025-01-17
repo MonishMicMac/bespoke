@@ -33,6 +33,10 @@ Route::post('vendor/signup', [VendorController::class, 'store']);
 Route::put('vendor/edit/{id}', [VendorController::class, 'update']);
 
 Route::get('vendor/login', [VendorController::class, 'login']);
+Route::get('vendor/forgot/password/otp', [VendorController::class, 'sendOtp']);
+Route::get('vendor/forgot/password/set', [VendorController::class, 'verifyOtpAndResetPassword']);
+
+
 
 Route::post('user/signup', [UsersController::class, 'store']);
 Route::put('user/edit/{id}', [UsersController::class, 'update']);
